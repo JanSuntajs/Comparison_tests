@@ -59,7 +59,7 @@ def make_cores_list(max_cores):
 
 
 #testing naive and numba for loops in python 
-@nb.njit('complex128[:](float64[:], float64[:])', parallel=True, nogil=True, fastmath=True)
+@nb.njit('complex128[:](float64[:], float64[:])',fastmath=True)
 def calc_sff_nb(data, taulist):
 	"""
 	A function that takes a list of data (energies) and tau values and calculates the spectral
@@ -71,7 +71,7 @@ def calc_sff_nb(data, taulist):
 
 	sfflist=np.zeros_like(taulist, dtype=np.complex128)
 
-	for i in nb.prange(sfflist.size):
+	for i in range(sfflist.size):
 
 		sfflist[i]=np.sum(-1j*data*taulist[i])
 
@@ -85,7 +85,7 @@ def calc_sff_ave_nb(datalist, taulist):
 	"""
 	n_data=datalist.shape[1]
 	n_tau=taulist.size
-	sfflist=np.zeros(shape=(n_data, n_tau))
+	sfflist=np.zeros(shape=(n_data, n_tau), dtype=np.complex128)
 
 	for i in nb.prange(n_data):
 
@@ -142,7 +142,7 @@ if __name__=='__main__':
 
 		time=timeit(stmt='calc_sff_ave_nb(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave_nb', number=1)
 
-		tlist +="{}: {:.3e}; ".format(ncores)+tlist
+		tlist +="{}: {:.3e}; ".format(ncores, time)
 	out="numba:" + tlist
 	f.write(out+"\n")
 	print(out)
@@ -155,9 +155,10 @@ if __name__=='__main__':
 
 		time=timeit(stmt='calc_sff_ave(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave', number=1)
 
-		tlist +="{}: {:.3e}; ".format(ncores)+tlist
+		tlist +="{}: {:.3e}; ".format(ncores, time)
 	out="naive:" + tlist
 	f.write(out+"\n")
+	f.close()
 
 
 
