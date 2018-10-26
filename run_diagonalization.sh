@@ -16,6 +16,6 @@ module load intelpython2/2018-u1
 export MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
 which python2.7>> my-log.log
 
-srun python2.7 python_diagonalization.py 0 13
+srun python2.7 python_diagonalization.py 0 14
 
 source activate jan2
