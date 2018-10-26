@@ -48,6 +48,8 @@ try:
 except KeyError: #if the job is not run on slurm, a key error is raised
   num_cores=mp.cpu_count()
 
+
+print('number of all cores is: {}'.format(num_cores))
 # diag_dict={0: eigvalsh ,1: eigh} #which type of function to use; if only eigenvalues are required, use 0, if full eigensystem is wanted, use 1
 #get max number of cpus: 
 def make_cores_list(max_cores):
@@ -81,7 +83,7 @@ def eig(matrix, case):
 if __name__=='__main__':
 
 	args=sys.argv
-
+		
 	full_system=int(args[1]) #whether to calculate full eigensystem or just the eigenvalues
 	max_size=int(args[2])
 	"""
