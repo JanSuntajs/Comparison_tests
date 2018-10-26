@@ -1,0 +1,2 @@
+slurmstepd: error: task/cgroup: unable to add task[pid=26691] to memory cg '(null)'
+slurmstepd: error: *** JOB 1743319 ON compute-4-1 CANCELLED AT 2018-10-26T16:48:13 DUE TO TIME LIMIT ***

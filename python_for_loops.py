@@ -112,9 +112,9 @@ def calc_sff_ave(datalist, taulist):
 	"""
 	n_data=datalist.shape[1]
 	n_tau=taulist.size
-	sfflist=np.zeros(shape=(n_data, n_tau))
+	sfflist=np.zeros(shape=(n_data, n_tau), dtype=np.complex128)
 
-	for i in nb.prange(n_data):
+	for i in range(n_data):
 
 		sfflist[i]=calc_sff(datalist[i], taulist)
 
@@ -126,16 +126,16 @@ if __name__=='__main__':
 
 
 
-	taulist=np.logspace(-3,3,3000)
-	engylist=np.sort(np.random.uniform(size=(2000,2000)), axis=1)
+	taulist=np.logspace(-3,3,1000)
+	engylist=np.sort(np.random.uniform(size=(1000,1000)), axis=1)
 
 	f=open('./loop_benchmark/profile-time-{}.dat'.format(datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
 	
 
-
+	tlist=""
 	for ncores in make_cores_list(num_cores):
 		mkl_set_num_threads(ncores)
-		tlist=""
+		
 
 		mkl_set_num_threads(ncores)
 
@@ -146,9 +146,10 @@ if __name__=='__main__':
 	out="numba:" + tlist
 	f.write(out+"\n")
 	print(out)
+	tlist=""
 	for ncores in make_cores_list(num_cores):
 		mkl_set_num_threads(ncores)
-		tlist=""
+		
 
 		mkl_set_num_threads(ncores)
 
@@ -158,6 +159,7 @@ if __name__=='__main__':
 		tlist +="{}: {:.3e}; ".format(ncores, time)
 	out="naive:" + tlist
 	f.write(out+"\n")
+	print(out)
 	f.close()
 
 
