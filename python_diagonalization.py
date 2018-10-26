@@ -10,6 +10,7 @@ compare the two versions
 
 import numpy as np 
 from numpy.linalg import eigvalsh, eigh
+import datetime
 import sys
 import os
 import numpy as np
@@ -65,7 +66,7 @@ def make_cores_list(max_cores):
 def initMatrix(N):
 
 	np.random.seed(seed=1)
-	mat=np.random.uniform(size=(2**{1}, 2**{1}))
+	mat=np.random.uniform(size=(N, N))
 	mat=0.5*(mat+mat.T)
 
 	return mat
@@ -83,7 +84,7 @@ if __name__=='__main__':
 	args=sys.argv
 
 	full_system=int(args[1]) #whether to calculate full eigensystem or just the eigenvalues
-
+	max_size=int(args[2])
 	"""
 	Initialize a random matrix, make it symmetric
 
@@ -95,12 +96,12 @@ if __name__=='__main__':
 		tlist = ""
 		
 		mkl_set_num_threads(ncores)
-		for size in range(1,12,1):
+		for size in range(1,max_size+1,1):
 
+			N=2**size
+			mat=initMatrix(N)
 
-			mat=initMatrix(2**size)
-
-			time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,matrix, diag_dict,full_system', number=1)
+			time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
 			tlist += "{}: {:.3e}; ".format(ncores, time)
 
         out = "size: {:>8}; ".format(N)+tlist
