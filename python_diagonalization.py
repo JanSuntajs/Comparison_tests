@@ -49,6 +49,10 @@ except KeyError: #if the job is not run on slurm, a key error is raised
   num_cores=mp.cpu_count()
 
 
+if not os.path.exists('./diag_benchmark'):
+	os.makedirs('./diag_benchmark')
+
+
 print('number of all cores is: {}'.format(num_cores))
 # diag_dict={0: eigvalsh ,1: eigh} #which type of function to use; if only eigenvalues are required, use 0, if full eigensystem is wanted, use 1
 #get max number of cpus: 
@@ -92,7 +96,7 @@ if __name__=='__main__':
 	"""
 
 	# sizelist=np.arange(1,15,1)# N=2**power 	
-	f = open('profile-time-{}.dat'.format(datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
+	f = open('./diag_benchmark/profile-time-{}.dat'.format(datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
 	for ncores in make_cores_list(num_cores):
 		tlist = ""
 		
