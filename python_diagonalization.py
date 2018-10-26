@@ -48,7 +48,6 @@ try:
 except KeyError: #if the job is not run on slurm, a key error is raised
   num_cores=mp.cpu_count()
 
-
 # diag_dict={0: eigvalsh ,1: eigh} #which type of function to use; if only eigenvalues are required, use 0, if full eigensystem is wanted, use 1
 #get max number of cpus: 
 def make_cores_list(max_cores):
@@ -102,9 +101,9 @@ if __name__=='__main__':
 			mat=initMatrix(N)
 
 			time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
-			tlist += "{}: {:.3e}; ".format(ncores, time)
+			tlist += "{}: {:.3e}; ".format(size, time)
 
-        out = "size: {:>8}; ".format(N)+tlist
+        out = "ncores: {:>8}; ".format(ncores)+tlist
         f.write(out+"\n")
         print(out)
 	f.close()
