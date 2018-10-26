@@ -103,9 +103,9 @@ if __name__=='__main__':
 			time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
 			tlist += "{}: {:.3e}; ".format(size, time)
 
-        out = "ncores: {:>8}; ".format(ncores)+tlist
-        f.write(out+"\n")
-        print(out)
+        	out = "ncores: {:>8}; ".format(ncores)+tlist
+        	f.write(out+"\n")
+        	print(out)
 	f.close()
 
 
