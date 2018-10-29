@@ -1,5 +1,5 @@
 # Comparison tests #
-##WHAT IS THIS ALL ABOUT? ##
+## WHAT IS THIS ALL ABOUT? ##
 
 This project contains code speed comparisons between different python and fortran programs run 
 on the compute nodes of the spinon cluster of the F1 department at IJS. I am particularly interested
