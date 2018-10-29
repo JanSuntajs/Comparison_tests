@@ -112,7 +112,7 @@ do omp_thr=1, omp_max_thr
 
 	write(20,*) 'N_omp:', omp_thr
 
-	write(20, '(a15, <omp_max_thr>I11)') adjustl('size\ N_mkl '), (i,i=1,omp_max_thr)
+	write(20, '(a15, <omp_max_thr>I11)') adjustl('size\ N_mkl '), (i,i=1,mkl_max_thr)
 
 	call omp_set_num_threads(omp_thr)
 
@@ -127,7 +127,7 @@ do omp_thr=1, omp_max_thr
 
 
 			! up_bound=omp_max_thr-omp_thr
-			up_bound=omp_max_thr
+			up_bound=mkl_max_thr
 			! if (up_bound .lt. 1) up_bound=1
 
 			allocate(sym_rnd(N,N))
@@ -152,7 +152,7 @@ do omp_thr=1, omp_max_thr
 				time_values(2,mkl_thr)=real(count2- count1)/real( count_rate )
 			enddo
 			write(20, '(I15, <up_bound>E11.3E2)') N, time_values(1,:)
-			write(20, '(I15, <up_bound>E11.3E2)') N, time_values(2,:)
+			!write(20, '(I15, <up_bound>E11.3E2)') N, time_values(2,:)
 
 
 
