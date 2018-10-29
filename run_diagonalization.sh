@@ -14,8 +14,13 @@ source deactivate
 module purge
 module load intelpython2/2018-u1
 export MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-which python2.7>> my-log.log
+#which python2.7>> my-log.log
 
+srun python2.7 python_diagonalization.py 0 14
+
+
+module purge
+module load Anaconda2/5.3.0
 srun python2.7 python_diagonalization.py 0 14
 
 source activate jan2

@@ -95,23 +95,38 @@ if __name__=='__main__':
 
 	"""
 
-	# sizelist=np.arange(1,15,1)# N=2**power 	
-	f = open('./diag_benchmark/profile-time-{}.dat'.format(datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
-	for ncores in make_cores_list(num_cores):
-		tlist = ""
-		
-		mkl_set_num_threads(ncores)
-		for size in range(1,max_size+1,1):
+	namestring=''
+	if 'Intel' in sys.version:
+		namestring='intel_'
+	elif 'Anaconda' in sys.version:
+		namestring='anaconda_'
+	else:
+		pass
 
-			N=2**size
-			mat=initMatrix(N)
+
+
+	# sizelist=np.arange(1,15,1)# N=2**power 	
+	f = open('./diag_benchmark/{}_profile-time-{}.dat'.format(namestring, datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
+
+	for size in range(1,max_size+1,1):
+		N=2**size
+		
+		mat=initMatrix(N)
+		tlist = ""
+		for ncores in make_cores_list(num_cores):
+			mkl_set_num_threads(ncores)
+			
 
 			time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
-			tlist += "{}: {:.3e}; ".format(size, time)
+			tlist += "{}: {:.3e}; ".format(ncores, time)
 
-        	out = "ncores: {:>8}; ".format(ncores)+tlist
-        	f.write(out+"\n")
-        	print(out)
+    	out = "size: {:>8}; ".format(size)+tlist
+    	f.write(out+"\n")
+    	print(out)
+
+    f.write('System information: \n')
+    f.write(sys.version)
+
 	f.close()
 
 
