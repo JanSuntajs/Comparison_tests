@@ -1,2 +1,5 @@
 8
 /share/apps2/intelpython2/bin/python2.7
+/share/apps/anaconda2/5.3.0/bin/python2.7
+ OMP max threads:           1
+ MKL max threads:           8
