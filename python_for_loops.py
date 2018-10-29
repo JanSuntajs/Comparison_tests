@@ -77,7 +77,7 @@ def calc_sff_nb(data, taulist):
 
 	return sfflist
 
-@nb.njit('complex128[:,:](float64[:,:], float64[:])', parallel=True, nogil=True, fastmath=True)
+@nb.njit('complex128[:,:](float64[:,:], float64[:])', fastmath=True)
 def calc_sff_ave_nb(datalist, taulist):
 	"""
 	Average sff over different datasets that are stored in the datalist
@@ -87,7 +87,7 @@ def calc_sff_ave_nb(datalist, taulist):
 	n_tau=taulist.size
 	sfflist=np.zeros(shape=(n_data, n_tau), dtype=np.complex128)
 
-	for i in nb.prange(n_data):
+	for i in range(n_data):
 
 		sfflist[i]=calc_sff_nb(datalist[i], taulist)
 
