@@ -66,5 +66,8 @@ srun ./fortran_diagonalization.o 14
 
 ```
 
+## DATA STORAGE ##
+
+`SLURM` logs are stored in `./Logs`, diagonalization and loop benchmarks are stored in `./diag_benchmark`and `loop_benchmark` folders, respectively. `intel` and `anaconda` filename prefixes stand for different `python` modules used.
 
 
