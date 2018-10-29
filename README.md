@@ -29,9 +29,9 @@ $compiler $name_source $libs1 -o $name_object
 
 ## SBATCH SUBMISSION SCRIPT ##
 
-The code below submits jobs to the `spinon` cluster. Diagonalization of different symmetric random matrices is then performed, with the largest ones having size N=2^14=16384.
+The code below submits jobs to the `spinon` cluster. Diagonalization of different symmetric random matrices is then performed, with the largest ones having size `N=2^14=16384`.
 
-
+```bash
 #!/bin/bash 
 
 #SBATCH --time=2:59:00
