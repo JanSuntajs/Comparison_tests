@@ -108,23 +108,21 @@ open(unit=out_unit, file='./diag_benchmark/fortran_syev_benchmark_real.txt', act
 write(20,'(a8,I3,a8,I3)') 'OMP_max: ', omp_max_thr, ' MKL max:', mkl_max_thr
 write(20,*) 'First entry: omp_get_wtime. Second entry: real time.'
 
-do omp_thr=1, omp_max_thr
 
-	write(20,*) 'N_omp:', omp_thr
+write(20,*) 'N_omp:', omp_thr
 
-	write(20, '(a15, <omp_max_thr>I11)') adjustl('size\ N_mkl '), (i,i=1,mkl_max_thr)
 
-	call omp_set_num_threads(omp_thr)
+call omp_set_num_threads(omp_thr)
 
-	! do mkl_thr=1, omp_max_thr-omp_thr
 
-	! 	call mkl_set_num_threads(mkl_thr)
-	! 	write(20,*) 'N_mkl:', mkl_thr
-	! 	write(20, '(a4, 2a12)') adjustr('N:'),adjustr('t_cons: '), adjustr('t_diag:')
-		do power=1, power_max
+do power=1, power_max
 
-			N=2**power
+	N=2**power
 
+	write(20, '(a15, <mkl_max_thr>I11)') adjustl('size\ N_mkl '), (i,i=1,mkl_max_thr)
+	do mkl_thr=1, mkl_max_thr
+		call mkl_set_num_threads(mkl_thr)
+	
 
 			! up_bound=omp_max_thr-omp_thr
 			up_bound=mkl_max_thr
@@ -134,33 +132,26 @@ do omp_thr=1, omp_max_thr
 			allocate(eigvals(N))
 			allocate(time_values(2,up_bound))
 
-
-
-			do mkl_thr=1, up_bound
-
-				call mkl_set_num_threads(mkl_thr)
-
-
-				call rnd_sym(sym_rnd,0)
-				eigvals=0.
+			call rnd_sym(sym_rnd,0)
+			eigvals=0.
 				!diagonalization 
-				start=omp_get_wtime()
-				call full_diag(sym_rnd, eigvals)
-				end=omp_get_wtime()
+			start=omp_get_wtime()
+			call full_diag(sym_rnd, eigvals)
+			end=omp_get_wtime()
 
-				time_values(1,mkl_thr)=end-start
-				time_values(2,mkl_thr)=real(count2- count1)/real( count_rate )
-			enddo
-			write(20, '(I15, <up_bound>E11.3E2)') N, time_values(1,:)
+			time_values(1,mkl_thr)=end-start
+			time_values(2,mkl_thr)=real(count2- count1)/real( count_rate )
+			
+			deallocate(time_values)
+			deallocate(eigvals)
+	enddo
+	write(20, '(I15, <up_bound>E11.3E2)') N, time_values(1,:)
 			!write(20, '(I15, <up_bound>E11.3E2)') N, time_values(2,:)
 
 
+	deallocate(sym_rnd)
+enddo		
 
-			deallocate(time_values)
-			deallocate(sym_rnd)
-			deallocate(eigvals)
-		enddo		
-	enddo
 
 close(out_unit)
 
