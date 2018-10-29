@@ -120,17 +120,22 @@ do power=1, power_max
 	N=2**power
 
 	write(20, '(a15, <mkl_max_thr>I11)') adjustl('size\ N_mkl '), (i,i=1,mkl_max_thr)
+	allocate(time_values(2,mkl_max_thr))
 	do mkl_thr=1, mkl_max_thr
+
+
+		
+		
 		call mkl_set_num_threads(mkl_thr)
 	
 
 			! up_bound=omp_max_thr-omp_thr
-			up_bound=mkl_max_thr
+			
 			! if (up_bound .lt. 1) up_bound=1
 
 			allocate(sym_rnd(N,N))
 			allocate(eigvals(N))
-			allocate(time_values(2,up_bound))
+			
 
 			call rnd_sym(sym_rnd,0)
 			eigvals=0.
@@ -142,13 +147,14 @@ do power=1, power_max
 			time_values(1,mkl_thr)=end-start
 			time_values(2,mkl_thr)=real(count2- count1)/real( count_rate )
 			
-			deallocate(time_values)
-			deallocate(eigvals)
+			
+			
 	enddo
 	write(20, '(I15, <up_bound>E11.3E2)') N, time_values(1,:)
 			!write(20, '(I15, <up_bound>E11.3E2)') N, time_values(2,:)
-
-
+			
+	deallocate(eigvals)
+	deallocate(time_values)
 	deallocate(sym_rnd)
 enddo		
 
