@@ -19,24 +19,24 @@ from timeit import timeit
 
 
 try:
-	import ctypes #ctypes, used for determining the mkl num threads
-		
-	mkl_rt=ctypes.CDLL('libmkl_rt.so')
+    import ctypes #ctypes, used for determining the mkl num threads
+        
+    mkl_rt=ctypes.CDLL('libmkl_rt.so')
 
-	def mkl_set_num_threads(cores):
-		#Set # of MKL threads
-		mkl_rt.MKL_Set_Num_Threads(cores)
+    def mkl_set_num_threads(cores):
+        #Set # of MKL threads
+        mkl_rt.MKL_Set_Num_Threads(cores)
 
-	def mkl_get_max_threads():
-		# # of used MKL threads
-		print(mkl_rt.MKL_Get_Max_Threads())
+    def mkl_get_max_threads():
+        # # of used MKL threads
+        print(mkl_rt.MKL_Get_Max_Threads())
 
-	print('mkl maximum number of threads is:')
-	mkl_get_max_threads()
+    print('mkl maximum number of threads is:')
+    mkl_get_max_threads()
 
 except OSError:
 
-	print('WARNING: No libmkl_rt shared object! The program will not use mkl routines and optimizations!')
+    print('WARNING: No libmkl_rt shared object! The program will not use mkl routines and optimizations!')
 
 
 
@@ -50,7 +50,7 @@ except KeyError: #if the job is not run on slurm, a key error is raised
 
 
 if not os.path.exists('./diag_benchmark'):
-	os.makedirs('./diag_benchmark')
+    os.makedirs('./diag_benchmark')
 
 
 print('number of all cores is: {}'.format(num_cores))
@@ -58,79 +58,79 @@ print('number of all cores is: {}'.format(num_cores))
 #get max number of cpus: 
 def make_cores_list(max_cores):
 
-	cores_list=[1]
+    cores_list=[1]
 
-	if max_cores>1:
+    if max_cores>1:
 
-		for i in range(2,max_cores+2,2):
+        for i in range(2,max_cores+2,2):
 
-			cores_list.append(i)
+            cores_list.append(i)
 
-	return cores_list
+    return cores_list
 
 def initMatrix(N):
 
-	np.random.seed(seed=1)
-	mat=np.random.uniform(size=(N, N))
-	mat=0.5*(mat+mat.T)
+    np.random.seed(seed=1)
+    mat=np.random.uniform(size=(N, N))
+    mat=0.5*(mat+mat.T)
 
-	return mat
+    return mat
 
 diag_dict={0: eigvalsh, 1: eigh}
 
 def eig(matrix, case):
 
-	return diag_dict[case](matrix)
+    return diag_dict[case](matrix)
 
 
 
 if __name__=='__main__':
 
-	args=sys.argv
-		
-	full_system=int(args[1]) #whether to calculate full eigensystem or just the eigenvalues
-	max_size=int(args[2])
-	"""
-	Initialize a random matrix, make it symmetric
+    args=sys.argv
+        
+    full_system=int(args[1]) #whether to calculate full eigensystem or just the eigenvalues
+    max_size=int(args[2])
+    """
+    Initialize a random matrix, make it symmetric
 
-	"""
+    """
 
-	namestring=''
-	if 'Intel' in sys.version:
-		namestring='intel_'
-	elif 'Anaconda' in sys.version:
-		namestring='anaconda_'
-	else:
-		pass
+    namestring=''
+    if 'Intel' in sys.version:
+        namestring='intel_'
+    elif 'Anaconda' in sys.version:
+        namestring='anaconda_'
+    else:
+        pass
 
 
 
-	# sizelist=np.arange(1,15,1)# N=2**power 	
-	f = open('./diag_benchmark/{}_profile-time-{}.dat'.format(namestring, datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
+    # sizelist=np.arange(1,15,1)# N=2**power    
+    f = open('./diag_benchmark/{}_profile-time-{}.dat'.format(namestring, datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
 
-	for size in range(1,max_size+1,1):
-		N=2**size
-		
-		mat=initMatrix(N)
-		tlist = ""
-		for ncores in make_cores_list(num_cores):
-			mkl_set_num_threads(ncores)
-			
+    for size in range(1,max_size+1,1):
+        N=2**size
+        
+        mat=initMatrix(N)
+        tlist = ""
+        for ncores in make_cores_list(num_cores):
+            mkl_set_num_threads(ncores)
+            
 
-			time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
-			tlist += "{}: {:.3e}; ".format(ncores, time)
+            time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
+            tlist += "{}: {:.3e}; ".format(ncores, time)
 
-    	out = "size: {:>8}; ".format(size)+tlist
-    	f.write(out+"\n")
-    	print(out)
+        out = "size: {:>8}; ".format(size)+tlist
+        f.write(out+"\n")
+        print(out)
 
     f.write('System information: \n')
     f.write(sys.version)
 
-	f.close()
+    f.close()
 
 
 
-		#diagonalization 
+        #diagonalization 
 
 
