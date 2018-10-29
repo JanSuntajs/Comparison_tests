@@ -66,7 +66,7 @@ end module procedures
 
 
 
-module fortran_diag
+program fortran_diag
 
 
 use procedures
@@ -76,24 +76,24 @@ use mkl_service
 
 implicit none 
 
-real(kind=8), allocatable, dimension(:, :) sym_rnd
-real(kind=8), allocatable, dimension(:) :: eigvals
-real(kind=8), allocatable, dimension(:,:) :: time_values
+real(kind=8), allocatable ::  sym_rnd(:,:)
+real(kind=8), allocatable :: eigvals(:)
+real(kind=8), allocatable :: time_values(:,:)
 integer(kind=8) :: count1,count2, count_rate, count_max
 
 
 character(len=32) :: seed, s_size
 integer(KIND=8) :: N, iseed, i,j, up_bound ! matrix dimension
-reald(kind=8) :: rnd, start, end
-integer power, power_max !N=2**power
+real(kind=8) :: rnd, start, end
+integer :: power, power_max !N=2**power
 
 integer, parameter :: out_unit=20
-integer, parameter :: out_unit=21
+
 
 !OMP, MKL 
 integer :: omp_max_thr, mkl_max_thr, mkl_thr, omp_thr 
 
-call get_command_argument(1, s_size)
+call getarg(1, s_size)
 read(s_size, *) power_max 
 
 ! omp_max_thr=omp_get_max_threads()
@@ -103,7 +103,7 @@ mkl_max_thr=mkl_get_max_threads()
 write(6,*) 'OMP max threads:', omp_max_thr
 write(6,*) 'MKL max threads:', mkl_max_thr
 
-open(unit=out_unit, file='/diag_benchmark/fortran_syev_benchmark_real.txt', action="write", status="replace")
+open(unit=out_unit, file='./diag_benchmark/fortran_syev_benchmark_real.txt', action="write", status="replace")
 
 write(20,'(a8,I3,a8,I3)') 'OMP_max: ', omp_max_thr, ' MKL max:', mkl_max_thr
 write(20,*) 'First entry: omp_get_wtime. Second entry: real time.'
@@ -145,7 +145,7 @@ do omp_thr=1, omp_max_thr
 				eigvals=0.
 				!diagonalization 
 				start=omp_get_wtime()
-				call full_diag_packed(sym_rnd, eigvals)
+				call full_diag(sym_rnd, eigvals)
 				end=omp_get_wtime()
 
 				time_values(1,mkl_thr)=end-start
@@ -166,4 +166,4 @@ close(out_unit)
 
 
 
-end module fortran_diag
+end program fortran_diag

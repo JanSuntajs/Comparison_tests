@@ -120,6 +120,7 @@ if __name__=='__main__':
             time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
             tlist += "{}: {:.3e}; ".format(ncores, time)
 
+
         out = "size: {:>8}; ".format(N)+tlist
         f.write(out+"\n")
         print(out)
