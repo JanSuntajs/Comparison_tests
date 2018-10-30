@@ -8,6 +8,8 @@
 #SBATCH --error=./Logs/log%J.e
 
 
+conda deactivate
+
 module purge
 module load intelpython2/2018-u1
 export MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
