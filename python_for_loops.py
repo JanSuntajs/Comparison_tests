@@ -11,7 +11,7 @@ import multiprocessing as mp
 
 try:
 	import ctypes #ctypes, used for determining the mkl num threads
-		
+	mkl_string='mkl_'	
 	mkl_rt=ctypes.CDLL('libmkl_rt.so')
 
 	def mkl_set_num_threads(cores):
@@ -26,7 +26,7 @@ try:
 	mkl_get_max_threads()
 
 except OSError:
-
+	mkl_string='no_mkl_'
 	print('WARNING: No libmkl_rt shared object! The program will not use mkl routines and optimizations!')
 
 
@@ -124,42 +124,57 @@ def calc_sff_ave(datalist, taulist):
 if __name__=='__main__':
 
 
+	args=sys.argv
+
+	max_power=int(args[1])
+
+    namestring=''
+    if 'Intel' in sys.version:
+        namestring='intel_'
+    elif 'Anaconda' in sys.version:
+        namestring='anaconda_'
+    else:
+        namestring='plain_python_'
+
+	taulist=np.logspace(-3,3,10**3)
 
 
-	taulist=np.logspace(-3,3,1000)
-	engylist=np.sort(np.random.uniform(size=(1000,1000)), axis=1)
+	# engylist=np.sort(np.random.uniform(size=(1000,1000)), axis=1)
 
-	f=open('./loop_benchmark/profile-time-{}.dat'.format(datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
+	f=open('./loop_benchmark/{}{}profile-time-{}.dat'.format(mkl_string,namestring, datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w', 0)
 	
+	for power in range(max_power+1):
 
-	tlist=""
-	for ncores in make_cores_list(num_cores):
-		mkl_set_num_threads(ncores)
-		
+		tlist=""
+		for ncores in make_cores_list(num_cores):
 
-		mkl_set_num_threads(ncores)
-
-
-		time=timeit(stmt='calc_sff_ave_nb(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave_nb', number=1)
-
-		tlist +="{}: {:.3e}; ".format(ncores, time)
-	out="numba:" + tlist
-	f.write(out+"\n")
-	print(out)
-	tlist=""
-	for ncores in make_cores_list(num_cores):
-		mkl_set_num_threads(ncores)
-		
-
-		mkl_set_num_threads(ncores)
+			# mkl_set_num_threads(ncores)
+			mkl_set_num_threads(ncores)
 
 
-		time=timeit(stmt='calc_sff_ave(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave', number=1)
+			time=timeit(stmt='calc_sff_ave_nb(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave_nb', number=1)
 
-		tlist +="{}: {:.3e}; ".format(ncores, time)
-	out="naive:" + tlist
-	f.write(out+"\n")
-	print(out)
+			tlist +="{}: {:.3e}; ".format(ncores, time)
+		out="numba:" + tlist
+		f.write(out+"\n")
+		print(out)
+		# tlist=""
+		# for ncores in make_cores_list(num_cores):
+		# 	mkl_set_num_threads(ncores)
+			
+
+		# 	mkl_set_num_threads(ncores)
+
+
+		# 	time=timeit(stmt='calc_sff_ave(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave', number=1)
+
+		# 	tlist +="{}: {:.3e}; ".format(ncores, time)
+		# out="naive:" + tlist
+		# f.write(out+"\n")
+		# print(out)
+
+    f.write('System information: \n')
+    f.write(sys.version)
 	f.close()
 
 
