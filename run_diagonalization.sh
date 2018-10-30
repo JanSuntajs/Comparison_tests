@@ -10,7 +10,14 @@
 
 echo ${SLURM_CPUS_PER_TASK}
 
-source deactivate
+conda deactivate
+
+module purge
+which python2.7
+srun python 2.7 python_diagonalization.py 0 12
+
+
+
 module purge
 module load intelpython2/2018-u1
 export MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
@@ -31,4 +38,4 @@ module load intel/2018b
 
 srun ./fortran_diagonalization.o 12
 
-source activate jan2
+conda activate jan2

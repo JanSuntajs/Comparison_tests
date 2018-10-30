@@ -20,7 +20,8 @@ from timeit import timeit
 
 try:
     import ctypes #ctypes, used for determining the mkl num threads
-        
+    
+    mkl_present=True
     mkl_rt=ctypes.CDLL('libmkl_rt.so')
 
     def mkl_set_num_threads(cores):
@@ -35,7 +36,7 @@ try:
     mkl_get_max_threads()
 
 except OSError:
-
+    mkl_present=False
     print('WARNING: No libmkl_rt shared object! The program will not use mkl routines and optimizations!')
 
 
@@ -101,7 +102,7 @@ if __name__=='__main__':
     elif 'Anaconda' in sys.version:
         namestring='anaconda_'
     else:
-        pass
+        namestring='plain_python_'
 
 
 
@@ -114,8 +115,10 @@ if __name__=='__main__':
         mat=initMatrix(N)
         tlist = ""
         for ncores in make_cores_list(num_cores):
-            mkl_set_num_threads(ncores)
-            
+
+            if mkl_present:
+                mkl_set_num_threads(ncores)
+
 
             time=timeit(stmt='eig(mat, full_system)', setup='from __main__ import eig,mat, diag_dict,full_system', number=1)
             tlist += "{}: {:.3e}; ".format(ncores, time)
