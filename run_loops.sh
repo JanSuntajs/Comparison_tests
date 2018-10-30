@@ -8,14 +8,16 @@
 #SBATCH --error=./Logs/log%J.e
 
 
-echo ${SLURM_CPUS_PER_TASK}
-
-source deactivate
 module purge
 module load intelpython2/2018-u1
 export MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
-which python2.7>> my-log.log
+#which python2.7>> my-log.log
+which python2.7
+srun python2.7 python_diagonalization.py 0 3
 
-srun python2.7 python_for_loops.py
 
-source activate jan2
+module purge
+module load Anaconda2/5.3.0
+export MKL_NUM_THREADS=${SLURM_CPUS_PER_TASK}
+which python2.7
+srun python2.7 python_diagonalization.py 0 3
