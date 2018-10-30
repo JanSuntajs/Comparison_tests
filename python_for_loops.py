@@ -150,7 +150,7 @@ if __name__=='__main__':
 
             # mkl_set_num_threads(ncores)
             mkl_set_num_threads(ncores)
-
+            engylist=np.sort(np.random.uniform(size=(10**power,10**power)), axis=1)
 
             time=timeit(stmt='calc_sff_ave_nb(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave_nb', number=1)
 
