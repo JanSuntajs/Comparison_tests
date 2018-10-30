@@ -155,7 +155,7 @@ if __name__=='__main__':
             time=timeit(stmt='calc_sff_ave_nb(engylist, taulist)', setup='from __main__ import engylist, taulist, calc_sff_ave_nb', number=1)
 
             tlist +="{}: {:.3e}; ".format(ncores, time)
-        out="numba:" + tlist
+        out="numba size:{}".format(10**power) + tlist
         f.write(out+"\n")
         print(out)
         # tlist=""
